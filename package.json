@@ -1,7 +1,7 @@
 {
   "name": "create-nevermined-react",
   "author": "Nevermined AG",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "url": "https://github.com/nevermined-io/create-nevermined-react"
   },
@@ -17,8 +17,9 @@
     "ts:lint": "npx eslint . --ext .ts,.tsx",
     "artifacts:download": "sh ./scripts/download-artifacts.sh v2.0.5 mumbai"
   },
-  "main": "./dist/node/index.js",
-  "types": "./dist/node/index.d.ts",
+  "bin": {
+    "create-nevermined-react": ".bin/create-nevermined-react.js"
+  },
   "eslintConfig": {
     "extends": [
       "react-app"
