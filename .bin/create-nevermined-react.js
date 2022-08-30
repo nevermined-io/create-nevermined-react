@@ -28,7 +28,7 @@ clone.on("close", (code) => {
         console.log(" Installed dependencies ✅ ");
         console.log(" Downloading artifacts... ");
 
-        const artifacts = spawn('npm', ['run', 'artifacts:download']);
+        const artifacts = spawn('npm', ['run', 'artifacts:download'], { cwd: folderName });
   
         artifacts.on("close", (code) => {
           if (code !== 0) {
