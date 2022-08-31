@@ -45,6 +45,6 @@ clone.on("close", (code) => {
 });
 
 function handleError(type, errCode) {
-    console.error()
+    console.error(`Error type: ${type}, code: ${code}`)
     process.exit(errCode);
 }
