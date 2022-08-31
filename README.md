@@ -1,10 +1,37 @@
-# Example using Catalog
+# Create Nevermined React
 
-### Start the app
+Create Nevermined React is a `getting started` template which includes an example with all 
+the functionalities needed to start developing your `dApp` with [Nevermined](https://nevermined.io/)
 
-- `yarn && yarn start` Runs the app in the development mode.
+## Requirements
 
-### Workflow example NFT1155
+- [nodejs](https://nodejs.org/en/)
+- Walletprovider (currently we only support [Metamask](https://metamask.io/))
+
+## How to install
+
+There is two ways to install the getting started template:
+
+1. Installing the script in your system
+ 
+  * `npm i -g create-nevermined-react`
+  * `create-nevermined-react my-nevermined-dapp`
+
+2. With `npm init`
+
+  * `npm init nevermined-react my-nevermined-dapp`
+
+*Note:* You can overwrite `my-nevermined-dapp` by other name that you prefer
+
+## Start the app
+
+1. `cd my-nevermined-dapp`
+2. `yarn && yarn start`
+
+## Workflow example
+
+The example included in the template covers the most used functionalities to work with NFT1155,
+for others assets or more info please see [the documentation](http://nvm-docs.nevermined.io/).
 
 **Requirements:** The accounts wallet used for the example need to have `Matic` and `USDC`
 
@@ -18,4 +45,4 @@
 8. Repeat the step 4
 
 *Warning:* The data is not persistent, once that the browser is reloaded the workflow example starts
-from the beginning again 
+from the beginning again
