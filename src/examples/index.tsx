@@ -2,19 +2,28 @@ import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/Asse
 import React, { useEffect, useState } from 'react';
 import { MetaData, Logger, DDO } from '@nevermined-io/nevermined-sdk-js';
 import BigNumber from '@nevermined-io/nevermined-sdk-js/dist/node/utils/BigNumber';
-import { Catalog, AssetService, MintNFTInput } from '@nevermined-io/catalog-core';
+import { Catalog, MintNFTInput } from '@nevermined-io/catalog-core';
 import { getCurrentAccount } from '@nevermined-io/catalog-core'
 import { MetaMask } from '@nevermined-io/catalog-providers';
+import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles';
+import styles from './example.module.scss'
+
+const b = BEM('example', styles);
 
 const SDKInstance = () => {
   const { sdk, isLoadingSDK } = Catalog.useNevermined();
 
   return (
     <>
-      <div>Is Loading SDK</div>
-      <div>{isLoadingSDK ? 'Yes' : 'No'}</div>
-      <div>Is SDK Avaialable:</div>
-      <div>{sdk && Object.keys(sdk).length > 0 ? 'Yes' : 'No'}</div>
+      <UiLayout>
+        <UiText className={b('detail')} variants={['bold']}>Is Loading SDK:</UiText>
+        <UiText>{isLoadingSDK ? 'Yes' : 'No'}</UiText>
+      </UiLayout>
+
+      <UiLayout>
+        <UiText variants={['bold']} className={b('detail')}>Is SDK Avaialable:</UiText>
+        <UiText>{sdk && Object.keys(sdk).length > 0 ? 'Yes' : 'No'}</UiText>
+      </UiLayout>
     </>
   );
 };
@@ -23,30 +32,10 @@ const SingleAsset = ({ddo}: {ddo: DDO}) => {
 
   return (
     <>
-      <div>Asset {ddo.id.slice(0, 10)}...:</div>
-      <div>{JSON.stringify(ddo)}</div>
-    </>
-  );
-};
-
-const useAssetsQuery = {
-  offset: 150,
-  page: 1,
-  query: {},
-  sort: {
-    created: 'desc'
-  }
-};
-
-export const MultipleAssets = () => {
-  const { isLoading: isLoadingAssets, result } = AssetService.useAssets(useAssetsQuery);
-
-  return (
-    <>
-      <div>Is Loading Assets</div>
-      <div>{isLoadingAssets ? 'Yes' : 'No'}</div>
-      <div>Assets:</div>
-      <div>{result && JSON.stringify(result?.results)}</div>
+      <UiLayout>
+        <UiText className={b('detail')} variants={['bold']}>Asset {ddo.id.slice(0, 10)}...:</UiText>
+      </UiLayout>
+      <UiText className={b('ddo')} variants={['detail']}>{JSON.stringify(ddo)}</UiText>
     </>
   );
 };
@@ -90,9 +79,9 @@ const MintAsset = ({onMint}: {onMint: () => void}) => {
 
   return (
     <>
-      <button onClick={onMint} disabled={!Object.keys(assets).length}>
+      <UiButton onClick={onMint} disabled={!Object.keys(assets).length}>
         mint
-      </button>
+      </UiButton>
     </>
   );
 };
@@ -126,34 +115,36 @@ const BuyAsset = ({ddo}: {ddo: DDO}) => {
   };
 
   return (
-    <div>
+    <UiLayout className={b('buy')}>
       {ownNFT1155 ? (
-        <button onClick={download} disabled={isLoadingSDK}>
+        <UiButton onClick={download} disabled={isLoadingSDK}>
           Download NFT
-        </button>
+        </UiButton>
       ) : (
         owner !== walletAddress ?
-        <button onClick={buy} disabled={isLoadingSDK}>
+        <UiButton onClick={buy} disabled={isLoadingSDK}>
           buy
-        </button>
+        </UiButton>
         : <span>The owner cannot buy, please change the account to buy the NFT asset</span>
       )}
-    </div>
+    </UiLayout>
   );
 };
 
 const MMWallet = () => {
   const { loginMetamask, walletAddress } = MetaMask.useWallet();
   return (
-    <>
-      <div> {walletAddress}</div>
-      {!walletAddress && <button onClick={loginMetamask}>Connect To MM</button>}
-    </>
+    <UiLayout>
+      <UiText variants={['bold']} className={b('detail')}>Wallet address:</UiText>
+      <UiText>{walletAddress}</UiText>
+      {!walletAddress && <UiButton onClick={loginMetamask}>Connect To MM</UiButton>}
+    </UiLayout>
   );
 };
 
 const App = () => {
   const { isLoadingSDK, sdk, account, assets } = Catalog.useNevermined();
+  const { walletAddress } = MetaMask.useWallet()
   const [ddo, setDDO] = useState<DDO>({} as DDO)
   Logger.setLevel(3);
 
@@ -201,22 +192,20 @@ const App = () => {
   };
 
   return (
-    <>
+    <div className={b('container')}>
       <SDKInstance />
-      {!isLoadingSDK && (
-        <>
-          <MintAsset onMint={mint} />
-        </>
-      )}
       <MMWallet />
-      {ddo?.id && 
+      {walletAddress && !ddo.id && (
+        <MintAsset onMint={mint} />
+      )}
+      {!isLoadingSDK && ddo?.id &&  (
         <>
           <SingleAsset ddo={ddo}/>
           <BuyAsset ddo={ddo}/>
-        </>  
-      }
+        </>
+      )}
       
-    </>
+    </div>
   );
 };
 
