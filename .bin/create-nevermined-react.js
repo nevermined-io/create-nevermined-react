@@ -49,7 +49,7 @@ clone.on("close", (code) => {
         console.info("\x1b[32m%s\x1b[0m", " ☑ Installed dependencies\n");
         console.info("\x1b[35m%s\x1b[0m", " Downloading artifacts...");
 
-        const artifacts = spawn('sh', ['./scripts/download-artifacts.sh', 'v2.0.5', 'mumbai'], { cwd: folderName });
+        const artifacts = spawn('bash', ['./scripts/download-artifacts.sh', 'v2.0.5', 'mumbai'], { cwd: folderName });
 
         logs('artifacts', artifacts);
   
