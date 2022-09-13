@@ -2,11 +2,12 @@ import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/Asse
 import React, { useEffect, useState } from 'react';
 import { MetaData, Logger, DDO } from '@nevermined-io/nevermined-sdk-js';
 import BigNumber from '@nevermined-io/nevermined-sdk-js/dist/node/utils/BigNumber';
-import { Catalog, MintNFTInput } from '@nevermined-io/catalog-core';
+import { Catalog, AssetService, RoyaltyKind } from '@nevermined-io/catalog-core';
 import { getCurrentAccount } from '@nevermined-io/catalog-core'
 import { MetaMask } from '@nevermined-io/catalog-providers';
 import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles';
 import styles from './example.module.scss'
+import { appConfig, erc20TokenAddress } from 'config';
 
 const b = BEM('example', styles);
 
@@ -74,12 +75,12 @@ const constructRewardMap = (
   return rewardMap;
 };
 
-const MintAsset = ({onMint}: {onMint: () => void}) => {
+const PublishAsset = ({onPublish}: {onPublish: () => void}) => {
   const { assets } = Catalog.useNevermined();
 
   return (
     <>
-      <UiButton onClick={onMint} disabled={!Object.keys(assets).length}>
+      <UiButton onClick={onPublish} disabled={!Object.keys(assets).length}>
         mint
       </UiButton>
     </>
@@ -143,7 +144,8 @@ const MMWallet = () => {
 };
 
 const App = () => {
-  const { isLoadingSDK, sdk, account, assets } = Catalog.useNevermined();
+  const { isLoadingSDK, sdk, account } = Catalog.useNevermined();
+  const { publishNFT1155 } = AssetService.useAssetPublish()
   const { walletAddress } = MetaMask.useWallet()
   const [ddo, setDDO] = useState<DDO>({} as DDO)
   Logger.setLevel(3);
@@ -164,28 +166,29 @@ const App = () => {
     }
   };
 
-  const mint = async () => {
+  const onPublish = async () => {
     try {
       const publisher = await getCurrentAccount(sdk);
       const rewardsRecipients: any[] = [];
       const assetRewardsMap = constructRewardMap(rewardsRecipients, 100, publisher.getId());
       const assetRewards = new AssetRewards(assetRewardsMap);
-      const data: MintNFTInput = {
-        metadata,
-        publisher,
-        cap: 100,
-        royalties: 0,
-        nftAmount: 1,
-        preMint: true,
-        erc20TokenAddress: '0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e',
-        //@ts-ignore
-        assetRewards
-      };
+
       if (!account.isTokenValid()) {
         await account.generateToken();
       }
-      const response = await assets.mint(data);
-      setDDO(response);
+      const response = await publishNFT1155({
+        gatewayAddress: String(appConfig.gatewayAddress),
+        assetRewards,
+        metadata,
+        nftAmount: 1,
+        preMint: true,
+        cap: 100,
+        royalties: 0,
+        royaltyKind: RoyaltyKind.Standard,
+        erc20TokenAddress,
+      });
+
+      setDDO(response as DDO);
     } catch (error) {
       console.log('error', error);
     }
@@ -196,7 +199,7 @@ const App = () => {
       <SDKInstance />
       <MMWallet />
       {walletAddress && !ddo.id && (
-        <MintAsset onMint={mint} />
+        <PublishAsset onPublish={onPublish} />
       )}
       {!isLoadingSDK && ddo?.id &&  (
         <>
