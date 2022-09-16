@@ -27,8 +27,3 @@ export const appConfig: Config = {
   artifactsFolder: `${rootUri}/contracts`
 };
 
-//
-// export const nodeUri =
-//   process.env.REACT_APP_NODE_URI ||
-//   'https://polygon-mumbai.infura.io/v3/eda048626e2745b182f43de61ac70be1';
-//export const marketplaceUri = 'https://metadata.auto-nvm2.nevermined.rocks';
