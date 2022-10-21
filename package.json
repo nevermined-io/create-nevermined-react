@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "eject": "react-scripts eject",
     "ts:lint": "npx eslint . --ext .ts,.tsx",
-    "artifacts:download": "sh ./scripts/download-artifacts.sh v2.0.5 mumbai"
+    "artifacts:download": "sh ./scripts/download-artifacts.sh v2.1.0 mumbai"
   },
   "bin": {
     "create-nevermined-react": ".bin/create-nevermined-react.js"

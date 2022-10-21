@@ -1,13 +1,30 @@
 import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/AssetRewards';
 import React, { useEffect, useState } from 'react';
-import { Catalog, AssetService, RoyaltyKind, getRoyaltyScheme, BigNumber, DDO, Logger, MetaData } from '@nevermined-io/catalog-core';
+import { Catalog, AssetService, RoyaltyKind, getRoyaltyScheme, BigNumber, DDO, Logger, MetaData, Config, Account } from '@nevermined-io/catalog-core';
 import { getCurrentAccount } from '@nevermined-io/catalog-core'
 import { MetaMask } from '@nevermined-io/catalog-providers';
 import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles';
+import { Contract, ethers } from 'ethers'
 import styles from './example.module.scss'
 import { appConfig, erc20TokenAddress } from 'config';
 
 const b = BEM('example', styles);
+
+export const getFeesFromBigNumber = (fees: BigNumber): string => {
+  return (fees.toNumber() / 10000).toPrecision(2).toString()
+}
+
+export const loadNeverminedConfigContract = async (config: Config, account: Account): Promise<Contract> => {
+  const abiNvmConfig = `${config.artifactsFolder}/NeverminedConfig.mumbai.json`
+  const contractFetched = await fetch(abiNvmConfig);
+  const nvmConfigAbi = await contractFetched.json();
+
+  return new ethers.Contract(
+    nvmConfigAbi.address,
+    nvmConfigAbi.abi,
+    await account.findSigner(nvmConfigAbi.address),
+  )
+}
 
 const SDKInstance = () => {
   const { sdk, isLoadingSDK } = Catalog.useNevermined();
@@ -169,6 +186,16 @@ const App = () => {
       const rewardsRecipients: any[] = [];
       const assetRewardsMap = constructRewardMap(rewardsRecipients, 100, publisher.getId());
       const assetRewards = new AssetRewards(assetRewardsMap);
+      const configContract = await loadNeverminedConfigContract(appConfig, publisher)
+      const networkFee = await configContract.getMarketplaceFee()
+      if (networkFee.gt(0)) {
+        assetRewards.addNetworkFees(
+          await configContract.getFeeReceiver(),
+          networkFee
+        )
+        Logger.log(`Network Fees: ${getFeesFromBigNumber(networkFee)}`)
+      }
+
       const royaltyAttributes = {
         royaltyKind: RoyaltyKind.Standard,
         scheme: getRoyaltyScheme(sdk, RoyaltyKind.Standard),
