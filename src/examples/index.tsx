@@ -1,15 +1,30 @@
 import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/AssetRewards';
 import React, { useEffect, useState } from 'react';
-import { MetaData, Logger, DDO } from '@nevermined-io/nevermined-sdk-js';
-import BigNumber from '@nevermined-io/nevermined-sdk-js/dist/node/utils/BigNumber';
-import { Catalog, AssetService, RoyaltyKind, getRoyaltyScheme } from '@nevermined-io/catalog-core';
+import { Catalog, AssetService, RoyaltyKind, getRoyaltyScheme, BigNumber, DDO, Logger, MetaData, Config, Account } from '@nevermined-io/catalog-core';
 import { getCurrentAccount } from '@nevermined-io/catalog-core'
 import { MetaMask } from '@nevermined-io/catalog-providers';
 import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles';
+import { Contract, ethers } from 'ethers'
 import styles from './example.module.scss'
 import { appConfig, erc20TokenAddress } from 'config';
 
 const b = BEM('example', styles);
+
+export const getFeesFromBigNumber = (fees: BigNumber): string => {
+  return (fees.toNumber() / 10000).toPrecision(2).toString()
+}
+
+export const loadNeverminedConfigContract = async (config: Config, account: Account): Promise<Contract> => {
+  const abiNvmConfig = `${config.artifactsFolder}/NeverminedConfig.mumbai.json`
+  const contractFetched = await fetch(abiNvmConfig);
+  const nvmConfigAbi = await contractFetched.json();
+
+  return new ethers.Contract(
+    nvmConfigAbi.address,
+    nvmConfigAbi.abi,
+    await account.findSigner(nvmConfigAbi.address),
+  )
+}
 
 const SDKInstance = () => {
   const { sdk, isLoadingSDK } = Catalog.useNevermined();
@@ -107,7 +122,7 @@ const BuyAsset = ({ddo}: {ddo: DDO}) => {
     }
 
     const currentAccount = await getCurrentAccount(sdk);
-    const response = await subscription.buySubscription(ddo.id, currentAccount, owner, 1, 1155);
+    const response = await subscription.buySubscription(ddo.id, currentAccount, owner, BigNumber.from(1), 1155);
     setIsBought(Boolean(response));
   };
 
@@ -156,13 +171,12 @@ const App = () => {
       files: [{
         index: 0,
         contentType: 'application/json',
-        url: 'https://github.com/nevermined-io/docs/blob/master/docs/architecture/specs/metadata/examples/ddo-example.json'
+        url: 'https://github.com/nevermined-io/docs/blob/main/docs/architecture/specs/examples/did/v0.4/ddo-example.json'
       }],
       type: 'dataset',
       author: '',
       license: '',
-      dateCreated: new Date().toISOString(),
-      price: ''
+      dateCreated: new Date().toISOString()
     }
   };
 
@@ -172,6 +186,16 @@ const App = () => {
       const rewardsRecipients: any[] = [];
       const assetRewardsMap = constructRewardMap(rewardsRecipients, 100, publisher.getId());
       const assetRewards = new AssetRewards(assetRewardsMap);
+      const configContract = await loadNeverminedConfigContract(appConfig, publisher)
+      const networkFee = await configContract.getMarketplaceFee()
+      if (networkFee.gt(0)) {
+        assetRewards.addNetworkFees(
+          await configContract.getFeeReceiver(),
+          networkFee
+        )
+        Logger.log(`Network Fees: ${getFeesFromBigNumber(networkFee)}`)
+      }
+
       const royaltyAttributes = {
         royaltyKind: RoyaltyKind.Standard,
         scheme: getRoyaltyScheme(sdk, RoyaltyKind.Standard),
@@ -185,9 +209,9 @@ const App = () => {
         gatewayAddress: String(appConfig.gatewayAddress),
         assetRewards,
         metadata,
-        nftAmount: 1,
+        nftAmount: BigNumber.from(1),
         preMint: true,
-        cap: 100,
+        cap: BigNumber.from(100),
         royaltyAttributes,
         erc20TokenAddress,
       });

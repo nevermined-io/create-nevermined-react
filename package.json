@@ -1,7 +1,7 @@
 {
   "name": "create-nevermined-react",
   "author": "Nevermined AG",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "repository": {
     "url": "https://github.com/nevermined-io/create-nevermined-react"
   },
@@ -15,7 +15,7 @@
     "clean": "rm -rf dist",
     "eject": "react-scripts eject",
     "ts:lint": "npx eslint . --ext .ts,.tsx",
-    "artifacts:download": "sh ./scripts/download-artifacts.sh v2.0.5 mumbai"
+    "artifacts:download": "sh ./scripts/download-artifacts.sh v2.1.0 mumbai"
   },
   "bin": {
     "create-nevermined-react": ".bin/create-nevermined-react.js"
@@ -41,9 +41,9 @@
     ]
   },
   "dependencies": {
-    "@nevermined-io/catalog-core": "0.2.0",
-    "@nevermined-io/catalog-providers": "0.2.0",
-    "@nevermined-io/styles": "^0.1.7",
+    "@nevermined-io/catalog-core": "0.3.0",
+    "@nevermined-io/catalog-providers": "0.3.0",
+    "@nevermined-io/styles": "^0.1.9",
     "axios": "^0.24.0",
     "babel-eslint": "^10.1.0",
     "bignumber.js": "^9.0.2",
