@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test-pods:
+  test-template:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
