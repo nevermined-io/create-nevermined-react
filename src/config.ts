@@ -14,6 +14,7 @@ export const rootUri = process.env.REACT_APP_ROOT_URI || 'http://localhost:3445'
 export const marketplaceUri = 'https://marketplace-api.mumbai.public.nevermined.network';
 const graphHttpUri = process.env.GRAPH_HTTP_URI ||  'https://api.thegraph.com/subgraphs/name/nevermined-io/common';
 export const erc20TokenAddress = process.env.ERC20_TOKEN_ADDRESS || '0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e';
+export const nodeUri = process.env.NODE_URI || 'https://matic-mumbai.chainstacklabs.com';
 
 export const appConfig: Config = {
   //@ts-ignore
