@@ -1,2 +1,4 @@
 public/contracts
 node_modules
+dist
+build
