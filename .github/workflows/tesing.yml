@@ -1,0 +1,23 @@
+name: Testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-pods:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "17.x"
+          registry-url: https://registry.npmjs.org/
+      - name: Install packages
+        run:  npm install
+      - name: Linter
+        run:  npm run lint
+      - name: Build 
+        run:  npm run build
