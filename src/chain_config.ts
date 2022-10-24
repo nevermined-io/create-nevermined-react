@@ -1,11 +1,11 @@
-import { zeroX } from '@nevermined-io/nevermined-sdk-js/dist/node/utils';
-import { acceptedChainId } from 'config';
+import { zeroX } from '@nevermined-io/nevermined-sdk-js/dist/node/utils'
+import { acceptedChainId } from 'config'
 
-const acceptedChainIdHex = zeroX((+acceptedChainId).toString(16));
-const spreeChainId = zeroX((8996).toString(16));
-const polygonLocalnetChainId = zeroX((8997).toString(16));
-export const mumbaiChainId = zeroX((80001).toString(16));
-const mainnetChainId = zeroX((137).toString(16));
+const acceptedChainIdHex = zeroX((+acceptedChainId).toString(16))
+const spreeChainId = zeroX((8996).toString(16))
+const polygonLocalnetChainId = zeroX((8997).toString(16))
+export const mumbaiChainId = zeroX((80001).toString(16))
+const mainnetChainId = zeroX((137).toString(16))
 
 const ChainConfig = {
   development: {
@@ -49,16 +49,16 @@ const ChainConfig = {
   },
   returnConfig: (chainIdHex: string) => {
     if (chainIdHex === spreeChainId || chainIdHex === polygonLocalnetChainId) {
-      return ChainConfig.development;
+      return ChainConfig.development
     }
     if (chainIdHex === mumbaiChainId) {
-      return ChainConfig.mumbai;
+      return ChainConfig.mumbai
     }
     if (chainIdHex === mainnetChainId) {
-      return ChainConfig.mainnet;
+      return ChainConfig.mainnet
     }
-    return ChainConfig.development;
+    return ChainConfig.development
   }
-};
+}
 
-export default ChainConfig;
+export default ChainConfig

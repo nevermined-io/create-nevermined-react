@@ -1,6 +1,6 @@
 /* config-overrides.js */
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 module.exports = function override(config, env) {
     //do stuff with the webpack config...
 
@@ -16,18 +16,18 @@ module.exports = function override(config, env) {
         fs: false,
         // os: require.resolve('os-browserify/browser'),
         buffer: require.resolve('buffer/'),
-    };
+    }
     config.plugins.push(
         new webpack.ProvidePlugin({
             process: 'process/browser.js',
             Buffer: ['buffer', 'Buffer'],
         })
-    );
+    )
     config.module.rules.push({
         test: /\.js$/,
         include: path.resolve(__dirname, './node_modules/circomlib'),
         use: ['babel-loader'],
-    });
+    })
     config.module.rules.push({
         test: /\.cjs$/,
         include: [
@@ -37,7 +37,7 @@ module.exports = function override(config, env) {
         ],
         use: ['babel-loader'],
         type: 'javascript/auto',
-    });
+    })
 
-    return config;
-};
+    return config
+}
