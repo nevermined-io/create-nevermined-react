@@ -2,7 +2,6 @@
 const path = require('path')
 const webpack = require('webpack')
 module.exports = function override(config, env) {
-    console.log("ENTRO");
     config.resolve.fallback = {
         url: require.resolve('url'),
         assert: require.resolve('assert'),
