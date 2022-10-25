@@ -1,0 +1,18 @@
+{
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "env": {
+    "es6": true
+  },
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["nevermined"],
+      "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@next/next/no-html-link-for-pages": "off"
+      }
+    }
+  ]
+}
