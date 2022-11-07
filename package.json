@@ -6,7 +6,6 @@
     "url": "https://github.com/nevermined-io/create-nevermined-react"
   },
   "license": "Apache-2.0",
-  
   "scripts": {
     "start": "GENERATE_SOURCEMAP=false PORT=3445 BROWSER=none react-app-rewired start",
     "start-https": "GENERATE_SOURCEMAP=false HTTPS=true PORT=3445 BROWSER=none react-app-rewired start",
@@ -42,6 +41,7 @@
     "@nevermined-io/catalog-providers": "0.3.1",
     "@nevermined-io/styles": "^0.1.9",
     "axios": "^0.24.0",
+    "bem-helpers": "^1.1.0",
     "bignumber.js": "^9.0.2",
     "classnames": "^2.3.1",
     "ethers": "^5.6.9",
