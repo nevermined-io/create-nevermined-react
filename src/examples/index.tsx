@@ -1,7 +1,7 @@
 import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/AssetRewards'
 import React, { useEffect, useState } from 'react'
 import { Catalog, AssetService, RoyaltyKind, BigNumber, getRoyaltyScheme, MetaData, DDO } from '@nevermined-io/catalog-core'
-import { MetaMask } from '@nevermined-io/catalog-providers'
+import { useWallet, ConnectKit } from '@nevermined-io/catalog-providers'
 import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles'
 import styles from './example.module.scss'
 import { appConfig, erc20TokenAddress } from '../config'
@@ -52,7 +52,7 @@ const PublishAsset = ({onPublish}: {onPublish: () => void}) => {
 
 const BuyAsset = ({ddo}: {ddo: DDO}) => {
   const { assets, account, isLoadingSDK, nfts, sdk } = Catalog.useNevermined()
-  const { walletAddress } = MetaMask.useWallet()
+  const { walletAddress } = useWallet()
   const [ownNFT1155, setOwnNFT1155] = useState(false)
   const [isBought, setIsBought] = useState(false)
   const [owner, setOwner] = useState('')
@@ -91,12 +91,9 @@ const BuyAsset = ({ddo}: {ddo: DDO}) => {
 }
 
 const MMWallet = () => {
-  const { loginMetamask, walletAddress } = MetaMask.useWallet()
   return (
-    <UiLayout>
-      <UiText variants={['bold']} className={b('detail')}>Wallet address:</UiText>
-      <UiText>{walletAddress}</UiText>
-      {!walletAddress && <UiButton onClick={loginMetamask}>Connect To MM</UiButton>}
+    <UiLayout className={b('connect')}>
+      <ConnectKit.ConnectKitButton/>
     </UiLayout>
   )
 }
@@ -104,7 +101,7 @@ const MMWallet = () => {
 const App = () => {
   const { isLoadingSDK, sdk } = Catalog.useNevermined()
   const { publishNFT1155 } = AssetService.useAssetPublish()
-  const { walletAddress } = MetaMask.useWallet()
+  const { walletAddress } = useWallet()
   const [ddo, setDDO] = useState<DDO>({} as DDO)
 
   const metadata: MetaData = {
@@ -140,7 +137,7 @@ const App = () => {
       }
 
       const response = await publishNFT1155({
-        gatewayAddress: String(appConfig.gatewayAddress),
+        neverminedNodeAddress: String(appConfig.neverminedNodeAddress),
         assetRewards,
         metadata,
         nftAmount: BigNumber.from(1),
