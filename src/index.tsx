@@ -5,21 +5,20 @@ import ReactDOM from 'react-dom'
 import { Catalog, AssetService } from '@nevermined-io/catalog-core'
 import { appConfig } from './config'
 import Example from 'examples'
-import { MetaMask } from '@nevermined-io/catalog-providers'
-import chainConfig, { mumbaiChainId } from './chain_config'
+import { WalletProvider, getClient } from '@nevermined-io/catalog-providers'
+
 
 
 ReactDOM.render(
   <div>
     <Catalog.NeverminedProvider config={appConfig} verbose={true}>
       <AssetService.AssetPublishProvider>
-        <MetaMask.WalletProvider
-          externalChainConfig={chainConfig}
-          correctNetworkId={mumbaiChainId}
-          nodeUri={String(appConfig.nodeUri)}
+        <WalletProvider
+          client={getClient()}
+          correctNetworkId={80001}
         >
           <Example />
-        </MetaMask.WalletProvider>
+        </WalletProvider>
       </AssetService.AssetPublishProvider>
     </Catalog.NeverminedProvider>
   </div>,

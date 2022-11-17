@@ -1,7 +1,7 @@
 {
   "name": "create-nevermined-react",
   "author": "Nevermined AG",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "repository": {
     "url": "https://github.com/nevermined-io/create-nevermined-react"
   },
@@ -37,8 +37,8 @@
     ]
   },
   "dependencies": {
-    "@nevermined-io/catalog-core": "0.4.0",
-    "@nevermined-io/catalog-providers": "0.4.0",
+    "@nevermined-io/catalog-core": "^0.6.1",
+    "@nevermined-io/catalog-providers": "^0.6.1",
     "@nevermined-io/styles": "^0.1.9",
     "axios": "^0.24.0",
     "bem-helpers": "^1.1.0",
