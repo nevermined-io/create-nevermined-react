@@ -17,7 +17,7 @@
     "clean": "rm -rf dist",
     "eject": "react-app-rewired eject",
     "ts:lint": "npx eslint . --ext .ts,.tsx",
-    "artifacts:download": "sh ./scripts/download-artifacts.sh v2.1.0 mumbai"
+    "artifacts:download": "sh ./scripts/download-artifacts.sh v3.0.0 mumbai"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -37,8 +37,8 @@
     ]
   },
   "dependencies": {
-    "@nevermined-io/catalog-core": "^0.6.1",
-    "@nevermined-io/catalog-providers": "^0.6.1",
+    "@nevermined-io/catalog": "^1.0.0",
+    "@nevermined-io/providers": "^1.0.0",
     "@nevermined-io/styles": "^0.1.9",
     "axios": "^0.24.0",
     "bem-helpers": "^1.1.0",
@@ -70,6 +70,7 @@
     "@typescript-eslint/parser": "^5.40.1",
     "babel-loader": "8.1.0",
     "buffer": "^6.0.3",
+    "constants-browserify": "^1.0.0",
     "eslint": "^8.26.0",
     "eslint-config-nevermined": "^0.2.0",
     "eslint-config-next": "^12.3.1",

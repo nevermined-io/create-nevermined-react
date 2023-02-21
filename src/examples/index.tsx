@@ -1,7 +1,6 @@
-import AssetRewards from '@nevermined-io/nevermined-sdk-js/dist/node/models/AssetRewards'
 import React, { useEffect, useState } from 'react'
-import { Catalog, AssetService, RoyaltyKind, BigNumber, getRoyaltyScheme, MetaData, DDO } from '@nevermined-io/catalog-core'
-import { useWallet, ConnectKit } from '@nevermined-io/catalog-providers'
+import { Catalog, AssetService, RoyaltyKind, BigNumber, getRoyaltyScheme, MetaData, DDO, AssetPrice, NFTAttributes } from '@nevermined-io/catalog'
+import { useWallet, ConnectKit } from '@nevermined-io/providers'
 import { UiText, UiLayout, BEM, UiButton } from '@nevermined-io/styles'
 import styles from './example.module.scss'
 import { appConfig, erc20TokenAddress } from '../config'
@@ -65,12 +64,19 @@ const BuyAsset = ({ddo}: {ddo: DDO}) => {
   }, [walletAddress, isBought])
 
   const buy = async () => {
-    const response = await nfts.access(ddo.id, owner, BigNumber.from(1), 1155)
+    const response = await nfts.access({
+      did: ddo.id, 
+      nftHolder: owner,
+      nftAmount: BigNumber.from(1),
+      ercType: 1155
+    })
     setIsBought(Boolean(response))
   }
 
   const download = async () => {
-    await assets.downloadNFT(ddo.id)
+    await assets.downloadNFT({
+      did: ddo.id
+    })
   }
 
   return (
@@ -121,14 +127,15 @@ const App = () => {
 
   const onPublish = async () => {
     try {
-      const assetRewardsMap = new Map([
+      const assetPriceMap = new Map([
         [walletAddress, BigNumber.from(1)]
       ])
-      const assetRewards = new AssetRewards(assetRewardsMap)
+      const assetPrice = new AssetPrice(assetPriceMap)
 
       const networkFee = await sdk.keeper.nvmConfig.getNetworkFee()
       const feeReceiver = await sdk.keeper.nvmConfig.getFeeReceiver()
-      assetRewards.addNetworkFees(feeReceiver, BigNumber.from(networkFee))
+      assetPrice.addNetworkFees(feeReceiver, BigNumber.from(networkFee))
+      assetPrice.setTokenAddress(erc20TokenAddress)
 
       const royaltyAttributes = {
         royaltyKind: RoyaltyKind.Standard,
@@ -136,15 +143,20 @@ const App = () => {
         amount: 0,
       }
 
-      const response = await publishNFT1155({
-        neverminedNodeAddress: String(appConfig.neverminedNodeAddress),
-        assetRewards,
+      const nftAttributes = NFTAttributes.getNFT1155Instance({
         metadata,
-        nftAmount: BigNumber.from(1),
-        preMint: true,
+        serviceTypes: ['nft-sales', 'nft-access'],
+        amount: BigNumber.from(1),
         cap: BigNumber.from(100),
         royaltyAttributes,
-        erc20TokenAddress,
+        preMint: true,
+        nftContractAddress: sdk.nfts1155.nftContract.address,
+        providers: [appConfig.neverminedNodeAddress as string],
+        price: assetPrice,
+      })
+
+      const response = await publishNFT1155({
+        nftAttributes
       })
 
       setDDO(response as DDO)

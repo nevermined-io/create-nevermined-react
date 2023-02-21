@@ -2,10 +2,10 @@ import '@nevermined-io/styles/lib/esm/styles/globals.scss'
 import '@nevermined-io/styles/lib/esm/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Catalog, AssetService } from '@nevermined-io/catalog-core'
+import { Catalog, AssetService } from '@nevermined-io/catalog'
 import { appConfig } from './config'
 import Example from 'examples'
-import { WalletProvider, getClient } from '@nevermined-io/catalog-providers'
+import { WalletProvider, Wagmi, ConnectKit, Chains } from '@nevermined-io/providers'
 
 
 
@@ -14,7 +14,11 @@ ReactDOM.render(
     <Catalog.NeverminedProvider config={appConfig} verbose={true}>
       <AssetService.AssetPublishProvider>
         <WalletProvider
-          client={getClient()}
+          client={Wagmi.createClient(ConnectKit.getDefaultClient({
+            chains: [Chains.polygonMumbai],
+            autoConnect: true,
+            appName: 'Nevermined app'
+          }))}
           correctNetworkId={80001}
         >
           <Example />
