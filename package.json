@@ -17,7 +17,7 @@
     "clean": "rm -rf dist",
     "eject": "react-app-rewired eject",
     "ts:lint": "npx eslint . --ext .ts,.tsx",
-    "artifacts:download": "sh ./scripts/download-artifacts.sh v3.0.0 mumbai"
+    "artifacts:download": "sh ./scripts/download-artifacts.sh v3.5.2 arbitrum-goerli"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -37,9 +37,9 @@
     ]
   },
   "dependencies": {
-    "@nevermined-io/catalog": "^1.0.0",
-    "@nevermined-io/providers": "^1.0.0",
+    "@nevermined-io/sdk": "^2.0.2",
     "@nevermined-io/styles": "^0.1.9",
+    "@turnkey/ethers": "^0.17.4",
     "axios": "^0.24.0",
     "bem-helpers": "^1.1.0",
     "bignumber.js": "^9.0.2",
@@ -52,6 +52,8 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.0",
     "stream-http": "^3.2.0",
+    "viem": "^1.12.2",
+    "wagmi": "^1.4.2",
     "web-vitals": "^2.1.2"
   },
   "devDependencies": {
@@ -64,8 +66,8 @@
     "@react-mock/state": "^0.1.8",
     "@types/lodash.uniqby": "^4.7.6",
     "@types/node": "^12.0.0",
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "babel-loader": "8.1.0",

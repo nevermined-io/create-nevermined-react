@@ -1,30 +1,23 @@
 import '@nevermined-io/styles/lib/esm/styles/globals.scss'
 import '@nevermined-io/styles/lib/esm/index.css'
 import React from 'react'
-import ReactDOM from 'react-dom'
-import { Catalog, AssetService } from '@nevermined-io/catalog'
+import { createRoot } from 'react-dom/client'
 import { appConfig } from './config'
-import Example from 'examples'
-import { WalletProvider, Wagmi, ConnectKit, Chains } from '@nevermined-io/providers'
+import App from './examples/index'
+import { WagmiConfig, createConfig } from 'wagmi'
+import { createPublicClient, http } from 'viem'
+import { arbitrumGoerli } from 'viem/chains'
 
+const config = createConfig({
+  autoConnect: true,
+  publicClient: createPublicClient({
+    chain: arbitrumGoerli,
+    transport: http(),
+  }),
+})
 
-
-ReactDOM.render(
-  <div>
-    <Catalog.NeverminedProvider config={appConfig} verbose={true}>
-      <AssetService.AssetPublishProvider>
-        <WalletProvider
-          client={Wagmi.createClient(ConnectKit.getDefaultClient({
-            chains: [Chains.polygonMumbai],
-            autoConnect: true,
-            appName: 'Nevermined app'
-          }))}
-          correctNetworkId={80001}
-        >
-          <Example />
-        </WalletProvider>
-      </AssetService.AssetPublishProvider>
-    </Catalog.NeverminedProvider>
-  </div>,
-  document.getElementById('root') as HTMLElement
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <WagmiConfig config={config}>
+    <App config={appConfig} />
+  </WagmiConfig>,
 )
